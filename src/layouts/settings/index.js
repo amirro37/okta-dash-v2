@@ -57,8 +57,7 @@ function Settings() {
 
   const handleAiReview = () => {
     const reviewTimestamp = new Date().toLocaleString();
-    const defaultNotes =
-      contractInsights.aiReviewNotes || "AI review queued for Okta agreement.";
+    const defaultNotes = contractInsights.aiReviewNotes || "AI review queued for Okta agreement.";
 
     updateContractInsights({
       aiReviewNotes: defaultNotes,
@@ -114,9 +113,7 @@ function Settings() {
                   <MDInput
                     label="Okta base URL"
                     value={baseUrl}
-                    onChange={(event) =>
-                      updateCredentials({ baseUrl: event.target.value })
-                    }
+                    onChange={(event) => updateCredentials({ baseUrl: event.target.value })}
                     fullWidth
                     placeholder="https://your-domain.okta.com"
                     helperText="Use the full tenant URL. Include https:// and avoid trailing slashes."
@@ -126,9 +123,7 @@ function Settings() {
                   <MDInput
                     label="API token"
                     value={apiToken}
-                    onChange={(event) =>
-                      updateCredentials({ apiToken: event.target.value })
-                    }
+                    onChange={(event) => updateCredentials({ apiToken: event.target.value })}
                     fullWidth
                     type="password"
                     placeholder="SSWS..."
@@ -171,9 +166,7 @@ function Settings() {
                   <MDInput
                     label="SAML ACS URL"
                     value={identitySettings.samlAcsUrl}
-                    onChange={(event) =>
-                      updateIdentitySettings({ samlAcsUrl: event.target.value })
-                    }
+                    onChange={(event) => updateIdentitySettings({ samlAcsUrl: event.target.value })}
                     fullWidth
                     helperText="Typically the Okta redirect URL provided by downstream apps."
                   />
@@ -195,9 +188,7 @@ function Settings() {
                   <MDInput
                     label="OIDC issuer URL"
                     value={identitySettings.oidcIssuer}
-                    onChange={(event) =>
-                      updateIdentitySettings({ oidcIssuer: event.target.value })
-                    }
+                    onChange={(event) => updateIdentitySettings({ oidcIssuer: event.target.value })}
                     fullWidth
                     placeholder="https://your-domain.okta.com/oauth2/default"
                     helperText="Needed for JWKS validation and token audience checks."
@@ -284,9 +275,7 @@ function Settings() {
                     <MDInput
                       label="Tax ID"
                       value={billingDetails.taxId}
-                      onChange={(event) =>
-                        updateBillingDetails({ taxId: event.target.value })
-                      }
+                      onChange={(event) => updateBillingDetails({ taxId: event.target.value })}
                       fullWidth
                       helperText="Optional but helpful for invoicing validation."
                     />
@@ -325,9 +314,7 @@ function Settings() {
                     <MDInput
                       label="Primary admin"
                       value={customerProfile.adminName}
-                      onChange={(event) =>
-                        updateCustomerProfile({ adminName: event.target.value })
-                      }
+                      onChange={(event) => updateCustomerProfile({ adminName: event.target.value })}
                       fullWidth
                       helperText="Designated Okta administrator for approvals."
                     />
@@ -442,7 +429,8 @@ function Settings() {
               Summary cards refresh automatically as you complete each section.
             </MDTypography>
             <MDTypography variant="button" color="text">
-              Need a checklist? Ensure connection credentials are valid, federation metadata is monitored, finance contacts are named, and renewal milestones are captured.
+              Need a checklist? Ensure connection credentials are valid, federation metadata is
+              monitored, finance contacts are named, and renewal milestones are captured.
             </MDTypography>
           </MDBox>
         </Card>
