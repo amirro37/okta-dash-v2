@@ -37,10 +37,11 @@ Coded by www.creative-tim.com
 
 // Material Dashboard 2 React layouts
 import Dashboard from "layouts/dashboard";
-import Tables from "layouts/tables";
-import Billing from "layouts/billing";
-import RTL from "layouts/rtl";
-import Notifications from "layouts/notifications";
+import Users from "layouts/users";
+import Groups from "layouts/groups";
+import Apps from "layouts/apps";
+import Usage from "layouts/usage";
+import BackupOkta from "layouts/backup-okta";
 import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
@@ -59,35 +60,43 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Tables",
-    key: "tables",
-    icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/tables",
-    component: <Tables />,
+    name: "Users",
+    key: "users",
+    icon: <Icon fontSize="small">people</Icon>,
+    route: "/users",
+    component: <Users />,
   },
   {
     type: "collapse",
-    name: "Billing",
-    key: "billing",
-    icon: <Icon fontSize="small">receipt_long</Icon>,
-    route: "/billing",
-    component: <Billing />,
+    name: "Groups",
+    key: "groups",
+    icon: <Icon fontSize="small">groups</Icon>,
+    route: "/groups",
+    component: <Groups />,
   },
   {
     type: "collapse",
-    name: "RTL",
-    key: "rtl",
-    icon: <Icon fontSize="small">format_textdirection_r_to_l</Icon>,
-    route: "/rtl",
-    component: <RTL />,
+    name: "Apps",
+    key: "apps",
+    icon: <Icon fontSize="small">apps</Icon>,
+    route: "/apps",
+    component: <Apps />,
   },
   {
     type: "collapse",
-    name: "Notifications",
-    key: "notifications",
-    icon: <Icon fontSize="small">notifications</Icon>,
-    route: "/notifications",
-    component: <Notifications />,
+    name: "Usage",
+    key: "usage",
+    icon: <Icon fontSize="small">query_stats</Icon>,
+    route: "/usage",
+    component: <Usage />,
+  },
+  {
+    type: "collapse",
+    name: "Backup Okta",
+    key: "backup-okta",
+    icon: <Icon fontSize="small">cloud_upload</Icon>,
+    route: "/backup-okta",
+    component: <BackupOkta />,
   },
   {
     type: "collapse",
