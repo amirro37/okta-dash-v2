@@ -37,6 +37,9 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 import { useApi } from "context/ApiContext";
 import { useAuth } from "context/AuthContext";
 
+// Services
+import { initiateGoogleOAuth, initiateSsoEntry } from "services/auth";
+
 // Images
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 
@@ -63,8 +66,15 @@ function Basic() {
     baseUrl: baseUrl || "",
     apiToken: apiToken || "",
   });
-  const [status, setStatus] = useState("");
-  const [oktaStatus, setOktaStatus] = useState("");
+  const [status, setStatus] = useState({
+    severity: "info",
+    message: "Pick a sign-in path to start a session.",
+  });
+  const [oktaStatus, setOktaStatus] = useState({
+    severity: "info",
+    message: "Provide your Okta org URL and an API token.",
+  });
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const initialHelpText = useMemo(() => {
     const envProvided = baseUrl || apiToken;
@@ -72,7 +82,6 @@ function Basic() {
     return "Values prefilled from environment variables can be overridden.";
   }, [apiToken, baseUrl]);
 
-  const handleSetRememberMe = () => setRememberMe(!rememberMe);
   const handleSetRememberOkta = () => setRememberOkta(!rememberOkta);
 
   const handleChange = ({ target }) => {
@@ -94,10 +103,12 @@ function Basic() {
       apiToken: formValues.apiToken,
       persistCredentials: rememberOkta,
     });
-    setOktaStatus(
-      "Connection details saved for your session." +
-        (rememberOkta ? " We will reuse them on your next visit." : "")
-    );
+    setOktaStatus({
+      severity: "success",
+      message:
+        "Connection details saved for your session." +
+        (rememberOkta ? " We will reuse them on your next visit." : ""),
+    });
   };
 
   const handleLoginSubmit = (event) => {
@@ -147,8 +158,29 @@ function Basic() {
     }
   };
 
-  const handleLoginChange = ({ target }) => {
-    setLoginValues((prev) => ({ ...prev, [target.name]: target.value }));
+  const handleSsoSignIn = async (protocol) => {
+    setIsProcessing(true);
+    setStatus({
+      severity: "info",
+      message: `Starting ${protocol.toUpperCase()} flow...`,
+    });
+    try {
+      const redirectUrl = await initiateSsoEntry(protocol, { loginHint: identityHint });
+      setStatus({
+        severity: "success",
+        message: redirectUrl
+          ? `Redirecting to ${protocol.toUpperCase()} entry point at ${redirectUrl}`
+          : `Started ${protocol.toUpperCase()} flow; follow your identity provider prompts.`,
+      });
+    } catch (error) {
+      setStatus({
+        severity: "error",
+        message:
+          error?.message || `We could not start the ${protocol.toUpperCase()} flow right now.`,
+      });
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -171,8 +203,8 @@ function Basic() {
           <Grid container spacing={2} justifyContent="center" sx={{ mt: 1, mb: 2 }}>
             <Grid item xs={12}>
               <MDTypography variant="button" color="white">
-                Sign in with a local account or Google and keep your Okta connection handy for
-                API-powered widgets.
+                Start with an account, Google OAuth, or your SSO providers and keep your Okta
+                connection handy for API-powered widgets.
               </MDTypography>
             </Grid>
           </Grid>
@@ -261,13 +293,6 @@ function Basic() {
               <MDBox textAlign="center" my={2}>
                 <MDTypography variant="h6" fontWeight="medium" gutterBottom>
                   Sign in with Google
-                </MDTypography>
-                <MDTypography variant="body2" color="text" mb={2}>
-                  We will route you through Google OAuth and return you to the dashboard once
-                  authenticated.
-                </MDTypography>
-                <MDButton type="submit" variant="gradient" color="info" fullWidth>
-                  Continue with Google
                 </MDButton>
               </MDBox>
             ) : loginMethod === "sso" ? (
@@ -379,16 +404,36 @@ function Basic() {
               </MDBox>
             )}
 
-            {loginMethod === "local" && (
-              <MDBox mt={4} mb={1}>
-                <MDButton type="submit" variant="gradient" color="info" fullWidth>
-                  Sign in
+            <Grid container spacing={1} mb={2}>
+              <Grid item xs={12} md={6}>
+                <MDButton
+                  variant="outlined"
+                  color="secondary"
+                  fullWidth
+                  startIcon={<Icon>verified_user</Icon>}
+                  onClick={() => handleSsoSignIn("saml")}
+                  disabled={isProcessing}
+                >
+                  Launch SAML entry point
                 </MDButton>
-              </MDBox>
-            )}
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <MDButton
+                  variant="outlined"
+                  color="secondary"
+                  fullWidth
+                  startIcon={<Icon>link</Icon>}
+                  onClick={() => handleSsoSignIn("oidc")}
+                  disabled={isProcessing}
+                >
+                  Launch OIDC entry point
+                </MDButton>
+              </Grid>
+            </Grid>
+
             <MDBox mt={3} mb={1}>
-              <Alert severity="info" sx={{ fontSize: "0.9rem" }}>
-                {status || "Choose a method and sign in to continue."}
+              <Alert severity={status.severity} sx={{ fontSize: "0.9rem" }}>
+                {status.message}
               </Alert>
             </MDBox>
           </MDBox>
@@ -436,8 +481,8 @@ function Basic() {
               </MDButton>
             </MDBox>
             <MDBox mt={3} mb={1}>
-              <Alert severity="info" sx={{ fontSize: "0.9rem" }}>
-                {oktaStatus || initialHelpText}
+              <Alert severity={oktaStatus.severity} sx={{ fontSize: "0.9rem" }}>
+                {oktaStatus.message}
               </Alert>
             </MDBox>
           </MDBox>
