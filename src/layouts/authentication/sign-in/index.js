@@ -20,6 +20,8 @@ import Card from "@mui/material/Card";
 import Switch from "@mui/material/Switch";
 import Grid from "@mui/material/Grid";
 import Alert from "@mui/material/Alert";
+import Divider from "@mui/material/Divider";
+import Icon from "@mui/material/Icon";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -38,12 +40,16 @@ import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 
 function Basic() {
   const { baseUrl, apiToken, persistCredentials, updateCredentials } = useApi();
-  const [rememberMe, setRememberMe] = useState(persistCredentials);
+  const [loginMethod, setLoginMethod] = useState("local");
+  const [loginValues, setLoginValues] = useState({ email: "", password: "" });
+  const [rememberMe, setRememberMe] = useState(true);
+  const [rememberOkta, setRememberOkta] = useState(persistCredentials);
   const [formValues, setFormValues] = useState({
     baseUrl: baseUrl || "",
     apiToken: apiToken || "",
   });
   const [status, setStatus] = useState("");
+  const [oktaStatus, setOktaStatus] = useState("");
 
   const initialHelpText = useMemo(() => {
     const envProvided = baseUrl || apiToken;
@@ -52,22 +58,41 @@ function Basic() {
   }, [apiToken, baseUrl]);
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
+  const handleSetRememberOkta = () => setRememberOkta(!rememberOkta);
 
   const handleChange = ({ target }) => {
     setFormValues((prev) => ({ ...prev, [target.name]: target.value }));
   };
 
-  const handleSubmit = (event) => {
+  const handleOktaSubmit = (event) => {
     event.preventDefault();
     updateCredentials({
       baseUrl: formValues.baseUrl,
       apiToken: formValues.apiToken,
-      persistCredentials: rememberMe,
+      persistCredentials: rememberOkta,
     });
-    setStatus(
+    setOktaStatus(
       "Connection details saved for your session." +
-        (rememberMe ? " We will reuse them on your next visit." : "")
+        (rememberOkta ? " We will reuse them on your next visit." : "")
     );
+  };
+
+  const handleLoginSubmit = (event) => {
+    event.preventDefault();
+    if (loginMethod === "local") {
+      setStatus(
+        (loginValues.email
+          ? `Signed in as ${loginValues.email} with local credentials.`
+          : "Signed in with local credentials.") +
+          (rememberMe ? " We'll remember this device." : "")
+      );
+    } else {
+      setStatus("Signed in with Google (mocked OAuth flow for this dashboard).");
+    }
+  };
+
+  const handleLoginChange = ({ target }) => {
+    setLoginValues((prev) => ({ ...prev, [target.name]: target.value }));
   };
 
   return (
@@ -85,18 +110,111 @@ function Basic() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Connect your Okta tenant
+            Welcome back
           </MDTypography>
           <Grid container spacing={2} justifyContent="center" sx={{ mt: 1, mb: 2 }}>
             <Grid item xs={12}>
               <MDTypography variant="button" color="white">
-                Store your Okta base URL and API token (SSWS) to use across dashboard calls.
+                Sign in with a local account or Google and keep your Okta connection handy for
+                API-powered widgets.
               </MDTypography>
             </Grid>
           </Grid>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
-          <MDBox component="form" role="form" onSubmit={handleSubmit}>
+          <MDBox component="form" role="form" onSubmit={handleLoginSubmit}>
+            <MDBox display="flex" justifyContent="center" gap={1} mb={2}>
+              <MDButton
+                variant={loginMethod === "local" ? "gradient" : "outlined"}
+                color="info"
+                type="button"
+                onClick={() => setLoginMethod("local")}
+                startIcon={<Icon>person</Icon>}
+              >
+                Local account
+              </MDButton>
+              <MDButton
+                variant={loginMethod === "google" ? "gradient" : "outlined"}
+                color="info"
+                type="button"
+                onClick={() => setLoginMethod("google")}
+                startIcon={<Icon>google</Icon>}
+              >
+                Google
+              </MDButton>
+            </MDBox>
+
+            {loginMethod === "local" ? (
+              <>
+                <MDBox mb={2}>
+                  <MDInput
+                    name="email"
+                    type="email"
+                    label="Work email"
+                    value={loginValues.email}
+                    onChange={handleLoginChange}
+                    fullWidth
+                    placeholder="your.name@company.com"
+                    autoComplete="username"
+                  />
+                </MDBox>
+                <MDBox mb={2}>
+                  <MDInput
+                    name="password"
+                    type="password"
+                    label="Password"
+                    value={loginValues.password}
+                    onChange={handleLoginChange}
+                    fullWidth
+                    placeholder="••••••••"
+                    autoComplete="current-password"
+                  />
+                </MDBox>
+                <MDBox display="flex" alignItems="center" ml={-1}>
+                  <Switch checked={rememberMe} onChange={handleSetRememberMe} />
+                  <MDTypography
+                    variant="button"
+                    fontWeight="regular"
+                    color="text"
+                    onClick={handleSetRememberMe}
+                    sx={{ cursor: "pointer", userSelect: "none", ml: -1 }}
+                  >
+                    &nbsp;&nbsp;Keep me signed in on this device
+                  </MDTypography>
+                </MDBox>
+              </>
+            ) : (
+              <MDBox textAlign="center" my={2}>
+                <MDTypography variant="h6" fontWeight="medium" gutterBottom>
+                  Sign in with Google
+                </MDTypography>
+                <MDTypography variant="body2" color="text" mb={2}>
+                  We will route you through Google OAuth and return you to the dashboard once
+                  authenticated.
+                </MDTypography>
+                <MDButton type="submit" variant="gradient" color="info" fullWidth>
+                  Continue with Google
+                </MDButton>
+              </MDBox>
+            )}
+
+            {loginMethod === "local" && (
+              <MDBox mt={4} mb={1}>
+                <MDButton type="submit" variant="gradient" color="info" fullWidth>
+                  Sign in
+                </MDButton>
+              </MDBox>
+            )}
+            <MDBox mt={3} mb={1}>
+              <Alert severity="info" sx={{ fontSize: "0.9rem" }}>
+                {status || "Choose a method and sign in to continue."}
+              </Alert>
+            </MDBox>
+          </MDBox>
+
+          <Divider sx={{ my: 3 }}>Okta connection</Divider>
+
+          <MDBox component="form" role="form" onSubmit={handleOktaSubmit}>
             <MDBox mb={2}>
               <MDInput
                 name="baseUrl"
@@ -120,12 +238,12 @@ function Basic() {
               />
             </MDBox>
             <MDBox display="flex" alignItems="center" ml={-1}>
-              <Switch checked={rememberMe} onChange={handleSetRememberMe} />
+              <Switch checked={rememberOkta} onChange={handleSetRememberOkta} />
               <MDTypography
                 variant="button"
                 fontWeight="regular"
                 color="text"
-                onClick={handleSetRememberMe}
+                onClick={handleSetRememberOkta}
                 sx={{ cursor: "pointer", userSelect: "none", ml: -1 }}
               >
                 &nbsp;&nbsp;Remember on this device
@@ -138,7 +256,7 @@ function Basic() {
             </MDBox>
             <MDBox mt={3} mb={1}>
               <Alert severity="info" sx={{ fontSize: "0.9rem" }}>
-                {status || initialHelpText}
+                {oktaStatus || initialHelpText}
               </Alert>
             </MDBox>
           </MDBox>
