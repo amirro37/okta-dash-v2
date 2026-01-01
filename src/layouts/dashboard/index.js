@@ -59,8 +59,30 @@ const useSecurityOverview = () => ({
 });
 
 function Dashboard() {
-  const { sales, tasks } = reportsLineChartData;
-  const stats = useSecurityOverview();
+  const { appLogins, policyEvaluations } = reportsLineChartData;
+
+  const stats = {
+    mfaEnrollment: {
+      value: 92,
+      change: "+3%",
+      label: "enrolled this month",
+    },
+    activeSessions: {
+      value: "1,284",
+      change: "+5%",
+      label: "active session tokens",
+    },
+    passwordResets: {
+      value: 76,
+      change: "+12%",
+      label: "past 24 hours",
+    },
+    expiringTokens: {
+      value: 12,
+      change: "-4",
+      label: "tokens expiring this week",
+    },
+  };
 
   return (
     <DashboardLayout>
@@ -134,9 +156,9 @@ function Dashboard() {
               <MDBox mb={3}>
                 <ReportsBarChart
                   color="info"
-                  title="website views"
-                  description="Last Campaign Performance"
-                  date="campaign sent 2 days ago"
+                  title="MFA prompts success"
+                  description="Successful MFA challenges by factor"
+                  date="updated 5 min ago"
                   chart={reportsBarChartData}
                 />
               </MDBox>
@@ -145,14 +167,10 @@ function Dashboard() {
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="success"
-                  title="daily sales"
-                  description={
-                    <>
-                      (<strong>+15%</strong>) increase in today sales.
-                    </>
-                  }
-                  date="updated 4 min ago"
-                  chart={sales}
+                  title="App login volume"
+                  description="Monthly sign-ins across key apps"
+                  date="updated 10 min ago"
+                  chart={appLogins}
                 />
               </MDBox>
             </Grid>
@@ -160,10 +178,10 @@ function Dashboard() {
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="dark"
-                  title="completed tasks"
-                  description="Last Campaign Performance"
-                  date="just updated"
-                  chart={tasks}
+                  title="Policy evaluation outcomes"
+                  description="Allow decisions from sign-on and MFA policies"
+                  date="updated 10 min ago"
+                  chart={policyEvaluations}
                 />
               </MDBox>
             </Grid>
