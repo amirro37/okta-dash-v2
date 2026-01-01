@@ -46,6 +46,7 @@ import Settings from "layouts/settings";
 import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
+import ProtectedRoute from "components/ProtectedRoute";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -57,7 +58,11 @@ const routes = [
     key: "dashboard",
     icon: <Icon fontSize="small">dashboard</Icon>,
     route: "/dashboard",
-    component: <Dashboard />,
+    component: (
+      <ProtectedRoute>
+        <Dashboard />
+      </ProtectedRoute>
+    ),
   },
   {
     type: "collapse",
@@ -65,7 +70,11 @@ const routes = [
     key: "users",
     icon: <Icon fontSize="small">people</Icon>,
     route: "/users",
-    component: <Users />,
+    component: (
+      <ProtectedRoute>
+        <Users />
+      </ProtectedRoute>
+    ),
   },
   {
     type: "collapse",
@@ -73,7 +82,11 @@ const routes = [
     key: "groups",
     icon: <Icon fontSize="small">groups</Icon>,
     route: "/groups",
-    component: <Groups />,
+    component: (
+      <ProtectedRoute>
+        <Groups />
+      </ProtectedRoute>
+    ),
   },
   {
     type: "collapse",
@@ -81,7 +94,11 @@ const routes = [
     key: "apps",
     icon: <Icon fontSize="small">apps</Icon>,
     route: "/apps",
-    component: <Apps />,
+    component: (
+      <ProtectedRoute>
+        <Apps />
+      </ProtectedRoute>
+    ),
   },
   {
     type: "collapse",
@@ -89,7 +106,11 @@ const routes = [
     key: "usage",
     icon: <Icon fontSize="small">query_stats</Icon>,
     route: "/usage",
-    component: <Usage />,
+    component: (
+      <ProtectedRoute>
+        <Usage />
+      </ProtectedRoute>
+    ),
   },
   {
     type: "collapse",
@@ -97,7 +118,11 @@ const routes = [
     key: "backup-okta",
     icon: <Icon fontSize="small">cloud_upload</Icon>,
     route: "/backup-okta",
-    component: <BackupOkta />,
+    component: (
+      <ProtectedRoute>
+        <BackupOkta />
+      </ProtectedRoute>
+    ),
   },
   {
     type: "collapse",
@@ -105,7 +130,11 @@ const routes = [
     key: "settings",
     icon: <Icon fontSize="small">settings</Icon>,
     route: "/settings",
-    component: <Settings />,
+    component: (
+      <ProtectedRoute>
+        <Settings />
+      </ProtectedRoute>
+    ),
   },
   {
     type: "collapse",
@@ -113,7 +142,11 @@ const routes = [
     key: "profile",
     icon: <Icon fontSize="small">person</Icon>,
     route: "/profile",
-    component: <Profile />,
+    component: (
+      <ProtectedRoute>
+        <Profile />
+      </ProtectedRoute>
+    ),
   },
   {
     type: "collapse",

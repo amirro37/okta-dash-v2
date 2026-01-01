@@ -162,6 +162,16 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 sx={navbarIconButton}
                 onClick={handleConfiguratorOpen}
               >
+                <Icon sx={iconsStyle}>tune</Icon>
+              </IconButton>
+              <IconButton
+                component={Link}
+                to="/settings"
+                size="small"
+                disableRipple
+                color="inherit"
+                sx={navbarIconButton}
+              >
                 <Icon sx={iconsStyle}>settings</Icon>
               </IconButton>
               <IconButton

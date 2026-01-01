@@ -48,6 +48,7 @@ import routes from "routes";
 
 // Material Dashboard 2 React contexts
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
+import { useAuth } from "context/AuthContext";
 
 // Images
 import brandWhite from "assets/images/logo-ct.png";
@@ -68,6 +69,7 @@ export default function App() {
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
+  const { isAuthenticated } = useAuth();
 
   // Cache for the rtl
   useMemo(() => {
@@ -164,13 +166,16 @@ export default function App() {
             {configsButton}
           </>
         )}
-        {layout === "vr" && <Configurator />}
-        <Routes>
-          {getRoutes(routes)}
-          <Route path="*" element={<Navigate to="/dashboard" />} />
-        </Routes>
-      </ThemeProvider>
-    </CacheProvider>
+          {layout === "vr" && <Configurator />}
+          <Routes>
+            {getRoutes(routes)}
+            <Route
+              path="*"
+              element={<Navigate to={isAuthenticated ? "/dashboard" : "/authentication/sign-in"} />}
+            />
+          </Routes>
+        </ThemeProvider>
+      </CacheProvider>
   ) : (
     <ThemeProvider theme={darkMode ? themeDark : theme}>
       <CssBaseline />
@@ -191,7 +196,10 @@ export default function App() {
       {layout === "vr" && <Configurator />}
       <Routes>
         {getRoutes(routes)}
-        <Route path="*" element={<Navigate to="/dashboard" />} />
+        <Route
+          path="*"
+          element={<Navigate to={isAuthenticated ? "/dashboard" : "/authentication/sign-in"} />}
+        />
       </Routes>
     </ThemeProvider>
   );
