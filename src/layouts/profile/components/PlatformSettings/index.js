@@ -152,14 +152,7 @@ function PlatformSettings() {
           Accent color: {accentColor}
         </MDTypography>
         <MDBox display="flex" gap={1} mt={1}>
-          {[
-            "indigo",
-            "teal",
-            "orange",
-            "purple",
-            "pink",
-            "blue",
-          ].map((color) => (
+          {["indigo", "teal", "orange", "purple", "pink", "blue"].map((color) => (
             <MDButton
               key={color}
               size="small"

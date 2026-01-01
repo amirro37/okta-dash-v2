@@ -116,7 +116,9 @@ function Basic() {
     } else {
       setStatus(
         accountValues.password && accountValues.password === accountValues.confirmPassword
-          ? `Account created for ${accountValues.email || "new user"}. Check your email to activate.`
+          ? `Account created for ${
+              accountValues.email || "new user"
+            }. Check your email to activate.`
           : "Password confirmation doesn't match. Please review and try again."
       );
     }
