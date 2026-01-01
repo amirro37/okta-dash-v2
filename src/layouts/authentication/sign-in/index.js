@@ -84,6 +84,12 @@ function Basic() {
 
   const handleSetRememberOkta = () => setRememberOkta(!rememberOkta);
 
+  const handleSetRememberMe = () => setRememberMe(!rememberMe);
+
+  const handleLoginChange = ({ target }) => {
+    setLoginValues((prev) => ({ ...prev, [target.name]: target.value }));
+  };
+
   const handleChange = ({ target }) => {
     setFormValues((prev) => ({ ...prev, [target.name]: target.value }));
   };
@@ -118,7 +124,8 @@ function Basic() {
         ? location.state.from
         : "/dashboard";
 
-    const userEmail = loginValues.email || accountValues.email || ssoValues.email || "dashboard-user";
+    const userEmail =
+      loginValues.email || accountValues.email || ssoValues.email || "dashboard-user";
 
     if (loginMethod === "local") {
       login(`session-${Date.now()}`, { email: userEmail, method: "local" });
@@ -160,6 +167,7 @@ function Basic() {
 
   const handleSsoSignIn = async (protocol) => {
     setIsProcessing(true);
+    const identityHint = ssoValues.email || loginValues.email || accountValues.email;
     setStatus({
       severity: "info",
       message: `Starting ${protocol.toUpperCase()} flow...`,
@@ -293,7 +301,7 @@ function Basic() {
               <MDBox textAlign="center" my={2}>
                 <MDTypography variant="h6" fontWeight="medium" gutterBottom>
                   Sign in with Google
-                </MDButton>
+                </MDTypography>
               </MDBox>
             ) : loginMethod === "sso" ? (
               <MDBox my={2}>
