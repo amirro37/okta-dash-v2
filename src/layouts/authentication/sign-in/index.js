@@ -14,6 +14,7 @@ Coded by www.creative-tim.com
 */
 
 import { useMemo, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -34,12 +35,16 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 
 // Context
 import { useApi } from "context/ApiContext";
+import { useAuth } from "context/AuthContext";
 
 // Images
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 
 function Basic() {
   const { baseUrl, apiToken, persistCredentials, updateCredentials } = useApi();
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [loginMethod, setLoginMethod] = useState("local");
   const [loginValues, setLoginValues] = useState({ email: "", password: "" });
   const [accountValues, setAccountValues] = useState({
@@ -97,30 +102,48 @@ function Basic() {
 
   const handleLoginSubmit = (event) => {
     event.preventDefault();
+    const targetRoute =
+      location.state?.from && location.state.from !== "/authentication/sign-in"
+        ? location.state.from
+        : "/dashboard";
+
+    const userEmail = loginValues.email || accountValues.email || ssoValues.email || "dashboard-user";
+
     if (loginMethod === "local") {
+      login(`session-${Date.now()}`, { email: userEmail, method: "local" });
       setStatus(
         (loginValues.email
           ? `Signed in as ${loginValues.email} with local credentials.`
           : "Signed in with local credentials.") +
           (rememberMe ? " We'll remember this device." : "")
       );
+      navigate(targetRoute, { replace: true });
     } else if (loginMethod === "google") {
+      login(`session-${Date.now()}`, { email: userEmail, method: "google" });
       setStatus("Redirecting to Google OAuth to complete your sign-in.");
+      navigate(targetRoute, { replace: true });
     } else if (loginMethod === "sso") {
       const methodLabel = ssoMethod === "saml" ? "SAML" : "OIDC";
+      login(`session-${Date.now()}`, { email: userEmail, method: methodLabel });
       setStatus(
         `Starting ${methodLabel} SSO for ${
           ssoValues.domain || "your organization"
         }. Check your IdP to continue.`
       );
+      navigate(targetRoute, { replace: true });
     } else {
-      setStatus(
-        accountValues.password && accountValues.password === accountValues.confirmPassword
-          ? `Account created for ${
-              accountValues.email || "new user"
-            }. Check your email to activate.`
-          : "Password confirmation doesn't match. Please review and try again."
-      );
+      const passwordConfirmed =
+        accountValues.password && accountValues.password === accountValues.confirmPassword;
+
+      if (passwordConfirmed) {
+        login(`session-${Date.now()}`, { email: userEmail, method: "create" });
+        setStatus(
+          `Account created for ${accountValues.email || "new user"}. Check your email to activate.`
+        );
+        navigate(targetRoute, { replace: true });
+      } else {
+        setStatus("Password confirmation doesn't match. Please review and try again.");
+      }
     }
   };
 
