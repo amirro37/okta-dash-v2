@@ -34,8 +34,33 @@ import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 
+// Mocked security stats; replace with real data fetch when backend is available
+const useSecurityOverview = () => ({
+  mfaEnrollment: {
+    value: 86,
+    change: "+5%",
+    label: "vs. last week",
+  },
+  activeSessions: {
+    value: 1245,
+    change: "+12%",
+    label: "vs. yesterday",
+  },
+  passwordResets: {
+    value: 42,
+    change: "-8%",
+    label: "vs. last month",
+  },
+  expiringTokens: {
+    value: 18,
+    change: "+3",
+    label: "expire in ≤7 days",
+  },
+});
+
 function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
+  const stats = useSecurityOverview();
 
   return (
     <DashboardLayout>
@@ -46,28 +71,13 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="success"
-                icon="verified_user"
-                title="Active Users"
-                count={281}
+                icon="security"
+                title="MFA Enrollment"
+                count={`${stats.mfaEnrollment.value}%`}
                 percentage={{
                   color: "success",
-                  amount: "+69%",
-                  label: "vs. last month",
-                }}
-              />
-            </MDBox>
-          </Grid>
-          <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
-                color="warning"
-                icon="lock"
-                title="Locked Out Users"
-                count={14}
-                percentage={{
-                  color: "warning",
-                  amount: "+2%",
-                  label: "vs. last month",
+                  amount: stats.mfaEnrollment.change,
+                  label: stats.mfaEnrollment.label,
                 }}
               />
             </MDBox>
@@ -76,13 +86,13 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="info"
-                icon="pause_circle"
-                title="Suspended Users"
-                count={32}
+                icon="devices"
+                title="Active Sessions"
+                count={stats.activeSessions.value}
                 percentage={{
                   color: "info",
-                  amount: "-1%",
-                  label: "vs. last month",
+                  amount: stats.activeSessions.change,
+                  label: stats.activeSessions.label,
                 }}
               />
             </MDBox>
@@ -90,14 +100,29 @@ function Dashboard() {
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                color="dark"
-                icon="person_off"
-                title="Deactivated Users"
-                count={9}
+                color="warning"
+                icon="refresh"
+                title="Password Resets"
+                count={stats.passwordResets.value}
+                percentage={{
+                  color: "warning",
+                  amount: stats.passwordResets.change,
+                  label: stats.passwordResets.label,
+                }}
+              />
+            </MDBox>
+          </Grid>
+          <Grid item xs={12} md={6} lg={3}>
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                color="error"
+                icon="vpn_key"
+                title="API Tokens Expiring"
+                count={stats.expiringTokens.value}
                 percentage={{
                   color: "error",
-                  amount: "0%",
-                  label: "No change",
+                  amount: stats.expiringTokens.change,
+                  label: stats.expiringTokens.label,
                 }}
               />
             </MDBox>
