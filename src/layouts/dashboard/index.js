@@ -190,7 +190,13 @@ function Dashboard() {
             <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
                 <Card>
-                  <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3} pb={1}>
+                  <MDBox
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    p={3}
+                    pb={1}
+                  >
                     <MDBox>
                       <MDTypography variant="h6" gutterBottom>
                         Active app counts
