@@ -13,100 +13,87 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useState } from "react";
-
 // @mui material components
 import Card from "@mui/material/Card";
-import Switch from "@mui/material/Switch";
+import Divider from "@mui/material/Divider";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
-function PlatformSettings() {
-  const [followsMe, setFollowsMe] = useState(true);
-  const [answersPost, setAnswersPost] = useState(false);
-  const [mentionsMe, setMentionsMe] = useState(true);
-  const [newLaunches, setNewLaunches] = useState(false);
-  const [productUpdate, setProductUpdate] = useState(true);
-  const [newsletter, setNewsletter] = useState(false);
+const billingContacts = [
+  { label: "Primary contact", value: "Jessica Williams (finance@acme.io)" },
+  { label: "Backup contact", value: "Arun Patel (ap@acme.io)" },
+];
 
+const paymentInstruments = [
+  { label: "Default method", value: "Visa •••• 4242 (exp. 08/27)" },
+  { label: "Billing address", value: "500 Enterprise Way, Suite 200, Seattle, WA" },
+];
+
+const ssoConfigurations = [
+  { label: "Preferred IdP", value: "Okta (SAML 2.0)" },
+  { label: "Login policy", value: "Enforce SSO for all admins" },
+  { label: "MFA", value: "Okta Verify + SMS fallback" },
+];
+
+const contractTerms = [
+  { label: "Subscription", value: "Enterprise Annual" },
+  { label: "Renewal date", value: "December 1, 2025" },
+  { label: "Termination notice", value: "60 days" },
+];
+
+const profileFields = [
+  { label: "Organization", value: "Acme Corp" },
+  { label: "Timezone", value: "Pacific Time (PT)" },
+  { label: "Data region", value: "US-West" },
+];
+
+function renderSection(title, entries) {
+  return (
+    <MDBox mb={3}>
+      <MDTypography
+        variant="caption"
+        fontWeight="bold"
+        color="text"
+        textTransform="uppercase"
+      >
+        {title}
+      </MDTypography>
+      <MDBox mt={1.5} display="flex" flexDirection="column" gap={1}>
+        {entries.map(({ label, value }) => (
+          <MDBox key={`${title}-${label}`} display="flex" justifyContent="space-between">
+            <MDTypography variant="button" color="text" fontWeight="medium">
+              {label}
+            </MDTypography>
+            <MDTypography variant="button" color="text" textAlign="right">
+              {value}
+            </MDTypography>
+          </MDBox>
+        ))}
+      </MDBox>
+    </MDBox>
+  );
+}
+
+function PlatformSettings() {
   return (
     <Card sx={{ boxShadow: "none" }}>
       <MDBox p={2}>
         <MDTypography variant="h6" fontWeight="medium" textTransform="capitalize">
-          platform settings
+          enterprise settings
+        </MDTypography>
+        <MDTypography variant="button" color="text">
+          Key billing, access, and contract details for your organization.
         </MDTypography>
       </MDBox>
-      <MDBox pt={1} pb={2} px={2} lineHeight={1.25}>
-        <MDTypography variant="caption" fontWeight="bold" color="text" textTransform="uppercase">
-          account
-        </MDTypography>
-        <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
-          <MDBox mt={0.5}>
-            <Switch checked={followsMe} onChange={() => setFollowsMe(!followsMe)} />
-          </MDBox>
-          <MDBox width="80%" ml={0.5}>
-            <MDTypography variant="button" fontWeight="regular" color="text">
-              Email me when someone follows me
-            </MDTypography>
-          </MDBox>
-        </MDBox>
-        <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
-          <MDBox mt={0.5}>
-            <Switch checked={answersPost} onChange={() => setAnswersPost(!answersPost)} />
-          </MDBox>
-          <MDBox width="80%" ml={0.5}>
-            <MDTypography variant="button" fontWeight="regular" color="text">
-              Email me when someone answers on my post
-            </MDTypography>
-          </MDBox>
-        </MDBox>
-        <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
-          <MDBox mt={0.5}>
-            <Switch checked={mentionsMe} onChange={() => setMentionsMe(!mentionsMe)} />
-          </MDBox>
-          <MDBox width="80%" ml={0.5}>
-            <MDTypography variant="button" fontWeight="regular" color="text">
-              Email me when someone mentions me
-            </MDTypography>
-          </MDBox>
-        </MDBox>
-        <MDBox mt={3}>
-          <MDTypography variant="caption" fontWeight="bold" color="text" textTransform="uppercase">
-            application
-          </MDTypography>
-        </MDBox>
-        <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
-          <MDBox mt={0.5}>
-            <Switch checked={newLaunches} onChange={() => setNewLaunches(!newLaunches)} />
-          </MDBox>
-          <MDBox width="80%" ml={0.5}>
-            <MDTypography variant="button" fontWeight="regular" color="text">
-              New launches and projects
-            </MDTypography>
-          </MDBox>
-        </MDBox>
-        <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
-          <MDBox mt={0.5}>
-            <Switch checked={productUpdate} onChange={() => setProductUpdate(!productUpdate)} />
-          </MDBox>
-          <MDBox width="80%" ml={0.5}>
-            <MDTypography variant="button" fontWeight="regular" color="text">
-              Monthly product updates
-            </MDTypography>
-          </MDBox>
-        </MDBox>
-        <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
-          <MDBox mt={0.5}>
-            <Switch checked={newsletter} onChange={() => setNewsletter(!newsletter)} />
-          </MDBox>
-          <MDBox width="80%" ml={0.5}>
-            <MDTypography variant="button" fontWeight="regular" color="text">
-              Subscribe to newsletter
-            </MDTypography>
-          </MDBox>
-        </MDBox>
+      <Divider />
+      <MDBox pt={2} pb={2} px={2} lineHeight={1.25}>
+        {renderSection("Billing contacts", billingContacts)}
+        {renderSection("Payment instruments", paymentInstruments)}
+        {renderSection("SSO configuration", ssoConfigurations)}
+        {renderSection("Contract terms", contractTerms)}
+        {renderSection("Profile fields", profileFields)}
       </MDBox>
     </Card>
   );
