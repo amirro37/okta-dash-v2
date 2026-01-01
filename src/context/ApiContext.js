@@ -31,7 +31,7 @@ const defaultApiCalls = [
     name: "List Events",
     method: "GET",
     path: "/api/v1/logs",
-    filter: "?filter=eventType+eq+\"user.session.start\"",
+    filter: '?filter=eventType+eq+"user.session.start"',
     description: "Starter filter for sign-in events (customize as needed).",
   },
 ];
