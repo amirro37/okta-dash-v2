@@ -140,6 +140,10 @@ function Basic() {
       login(`session-${Date.now()}`, { email: userEmail, method: "google" });
       setStatus("Redirecting to Google OAuth to complete your sign-in.");
       navigate(targetRoute, { replace: true });
+    } else if (loginMethod === "microsoft") {
+      login(`session-${Date.now()}`, { email: userEmail, method: "microsoft" });
+      setStatus("Redirecting to Microsoft sign-in to complete your login.");
+      navigate(targetRoute, { replace: true });
     } else if (loginMethod === "sso") {
       const methodLabel = ssoMethod === "saml" ? "SAML" : "OIDC";
       login(`session-${Date.now()}`, { email: userEmail, method: methodLabel });
@@ -227,7 +231,7 @@ function Basic() {
                 onClick={() => setLoginMethod("local")}
                 startIcon={<Icon>person</Icon>}
               >
-                Local account
+                Login
               </MDButton>
               <MDButton
                 variant={loginMethod === "google" ? "gradient" : "outlined"}
@@ -236,7 +240,16 @@ function Basic() {
                 onClick={() => setLoginMethod("google")}
                 startIcon={<Icon>google</Icon>}
               >
-                Google
+                Sign in with Google
+              </MDButton>
+              <MDButton
+                variant={loginMethod === "microsoft" ? "gradient" : "outlined"}
+                color="info"
+                type="button"
+                onClick={() => setLoginMethod("microsoft")}
+                startIcon={<Icon>windows</Icon>}
+              >
+                Sign in with Microsoft
               </MDButton>
               <MDButton
                 variant={loginMethod === "sso" ? "gradient" : "outlined"}
@@ -245,16 +258,7 @@ function Basic() {
                 onClick={() => setLoginMethod("sso")}
                 startIcon={<Icon>vpn_key</Icon>}
               >
-                SSO (SAML / OIDC)
-              </MDButton>
-              <MDButton
-                variant={loginMethod === "create" ? "gradient" : "outlined"}
-                color="info"
-                type="button"
-                onClick={() => setLoginMethod("create")}
-                startIcon={<Icon>person_add</Icon>}
-              >
-                Create account
+                SSO login
               </MDButton>
             </MDBox>
 
@@ -303,13 +307,19 @@ function Basic() {
                   Sign in with Google
                 </MDTypography>
               </MDBox>
+            ) : loginMethod === "microsoft" ? (
+              <MDBox textAlign="center" my={2}>
+                <MDTypography variant="h6" fontWeight="medium" gutterBottom>
+                  Sign in with Microsoft
+                </MDTypography>
+              </MDBox>
             ) : loginMethod === "sso" ? (
               <MDBox my={2}>
                 <MDTypography variant="h6" fontWeight="medium" gutterBottom>
                   Use your company SSO
                 </MDTypography>
                 <MDTypography variant="body2" color="text" mb={2}>
-                  Choose your protocol and confirm your work email to launch the enterprise sign-in
+                  Choose your SSO path and confirm your work email to launch the enterprise sign-in
                   journey.
                 </MDTypography>
                 <Grid container spacing={1} mb={2}>
@@ -361,7 +371,7 @@ function Basic() {
                   />
                 </MDBox>
                 <MDButton type="submit" variant="gradient" color="info" fullWidth>
-                  Continue with {ssoMethod === "saml" ? "SAML" : "OIDC"} SSO
+                  Continue with company SSO
                 </MDButton>
               </MDBox>
             ) : (
