@@ -15,9 +15,11 @@ Coded by www.creative-tim.com
 
 // @mui material components
 import Grid from "@mui/material/Grid";
+import Card from "@mui/material/Card";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
+import MDTypography from "components/MDTypography";
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -25,6 +27,7 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
 import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
+import DataTable from "examples/Tables/DataTable";
 
 // Data
 import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
@@ -59,28 +62,38 @@ const useSecurityOverview = () => ({
 });
 
 function Dashboard() {
-  const { appLogins, policyEvaluations } = reportsLineChartData;
+  const { appLogins } = reportsLineChartData;
+
+  const activeAppCounts = {
+    columns: [
+      { Header: "app type", accessor: "type", width: "60%", align: "left" },
+      { Header: "active", accessor: "active", align: "center" },
+    ],
+    rows: [
+      { type: "SAML", active: "184" },
+      { type: "OIDC Web", active: "132" },
+      { type: "API Service", active: "96" },
+      { type: "SWA", active: "58" },
+    ],
+  };
+
+  const lastRefreshedAt = new Date().toLocaleString("en-US", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
 
   const stats = {
-    mfaEnrollment: {
-      value: 92,
-      change: "+3%",
-      label: "enrolled this month",
+    activeUsers: {
+      value: "18,420",
     },
-    activeSessions: {
-      value: "1,284",
-      change: "+5%",
-      label: "active session tokens",
+    lockedOutUsers: {
+      value: 64,
     },
-    passwordResets: {
-      value: 76,
-      change: "+12%",
-      label: "past 24 hours",
+    suspendedUsers: {
+      value: 23,
     },
-    expiringTokens: {
-      value: 12,
-      change: "-4",
-      label: "tokens expiring this week",
+    deactivatedUsers: {
+      value: 312,
     },
   };
 
@@ -93,13 +106,13 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="success"
-                icon="security"
-                title="MFA Enrollment"
-                count={`${stats.mfaEnrollment.value}%`}
+                icon="people"
+                title="Active Users"
+                count={stats.activeUsers.value}
                 percentage={{
-                  color: "success",
-                  amount: stats.mfaEnrollment.change,
-                  label: stats.mfaEnrollment.label,
+                  color: "text",
+                  amount: "",
+                  label: `Current as of ${lastRefreshedAt}`,
                 }}
               />
             </MDBox>
@@ -108,13 +121,13 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="info"
-                icon="devices"
-                title="Active Sessions"
-                count={stats.activeSessions.value}
+                icon="lock"
+                title="Locked Out"
+                count={stats.lockedOutUsers.value}
                 percentage={{
-                  color: "info",
-                  amount: stats.activeSessions.change,
-                  label: stats.activeSessions.label,
+                  color: "text",
+                  amount: "",
+                  label: `Current as of ${lastRefreshedAt}`,
                 }}
               />
             </MDBox>
@@ -123,13 +136,13 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="warning"
-                icon="refresh"
-                title="Password Resets"
-                count={stats.passwordResets.value}
+                icon="pause_circle"
+                title="Suspended"
+                count={stats.suspendedUsers.value}
                 percentage={{
-                  color: "warning",
-                  amount: stats.passwordResets.change,
-                  label: stats.passwordResets.label,
+                  color: "text",
+                  amount: "",
+                  label: `Current as of ${lastRefreshedAt}`,
                 }}
               />
             </MDBox>
@@ -138,13 +151,13 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="error"
-                icon="vpn_key"
-                title="API Tokens Expiring"
-                count={stats.expiringTokens.value}
+                icon="person_off"
+                title="Deactivated"
+                count={stats.deactivatedUsers.value}
                 percentage={{
-                  color: "error",
-                  amount: stats.expiringTokens.change,
-                  label: stats.expiringTokens.label,
+                  color: "text",
+                  amount: "",
+                  label: `Current as of ${lastRefreshedAt}`,
                 }}
               />
             </MDBox>
@@ -176,13 +189,27 @@ function Dashboard() {
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
-                <ReportsLineChart
-                  color="dark"
-                  title="Policy evaluation outcomes"
-                  description="Allow decisions from sign-on and MFA policies"
-                  date="updated 10 min ago"
-                  chart={policyEvaluations}
-                />
+                <Card>
+                  <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3} pb={1}>
+                    <MDBox>
+                      <MDTypography variant="h6" gutterBottom>
+                        Active app counts
+                      </MDTypography>
+                      <MDTypography variant="button" color="text" fontWeight="regular">
+                        By integration type
+                      </MDTypography>
+                    </MDBox>
+                  </MDBox>
+                  <MDBox px={3} pb={3}>
+                    <DataTable
+                      table={activeAppCounts}
+                      showTotalEntries={false}
+                      isSorted={false}
+                      entriesPerPage={false}
+                      noEndBorder
+                    />
+                  </MDBox>
+                </Card>
               </MDBox>
             </Grid>
           </Grid>
