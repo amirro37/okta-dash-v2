@@ -36,13 +36,40 @@ const defaultApiCalls = [
   },
 ];
 
+const defaultState = {
+  baseUrl: process.env.REACT_APP_OKTA_BASE_URL || "",
+  apiToken: process.env.REACT_APP_OKTA_API_TOKEN || "",
+  persistCredentials: true,
+  apiCalls: defaultApiCalls,
+  identitySettings: {
+    samlAcsUrl: "",
+    samlEntityId: "",
+    oidcIssuer: "",
+    metadataUrl: "",
+  },
+  billingDetails: {
+    billingContact: "",
+    billingEmail: "",
+    paymentMethod: "",
+    purchaseOrder: "",
+    taxId: "",
+  },
+  customerProfile: {
+    companyName: "",
+    adminName: "",
+    adminEmail: "",
+    supportChannel: "",
+  },
+  contractInsights: {
+    contractStatus: "",
+    renewalDate: "",
+    aiReviewNotes: "",
+    lastReviewed: "",
+  },
+};
+
 const loadPersistedState = () => {
-  const envState = {
-    baseUrl: process.env.REACT_APP_OKTA_BASE_URL || "",
-    apiToken: process.env.REACT_APP_OKTA_API_TOKEN || "",
-    persistCredentials: true,
-    apiCalls: defaultApiCalls,
-  };
+  const envState = { ...defaultState };
 
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
@@ -62,6 +89,22 @@ const loadPersistedState = () => {
         Array.isArray(parsed.apiCalls) && parsed.apiCalls.length > 0
           ? parsed.apiCalls
           : defaultApiCalls,
+      identitySettings: {
+        ...envState.identitySettings,
+        ...(parsed.identitySettings || {}),
+      },
+      billingDetails: {
+        ...envState.billingDetails,
+        ...(parsed.billingDetails || {}),
+      },
+      customerProfile: {
+        ...envState.customerProfile,
+        ...(parsed.customerProfile || {}),
+      },
+      contractInsights: {
+        ...envState.contractInsights,
+        ...(parsed.contractInsights || {}),
+      },
     };
   } catch (error) {
     return envState;
@@ -96,16 +139,72 @@ function ApiProvider({ children }) {
     }));
   }, []);
 
+  const updateIdentitySettings = useCallback((updates) => {
+    setState((prev) => ({
+      ...prev,
+      identitySettings: {
+        ...prev.identitySettings,
+        ...updates,
+      },
+    }));
+  }, []);
+
+  const updateBillingDetails = useCallback((updates) => {
+    setState((prev) => ({
+      ...prev,
+      billingDetails: {
+        ...prev.billingDetails,
+        ...updates,
+      },
+    }));
+  }, []);
+
+  const updateCustomerProfile = useCallback((updates) => {
+    setState((prev) => ({
+      ...prev,
+      customerProfile: {
+        ...prev.customerProfile,
+        ...updates,
+      },
+    }));
+  }, []);
+
+  const updateContractInsights = useCallback((updates) => {
+    setState((prev) => ({
+      ...prev,
+      contractInsights: {
+        ...prev.contractInsights,
+        ...updates,
+      },
+    }));
+  }, []);
+
   const value = useMemo(
     () => ({
       baseUrl: state.baseUrl,
       apiToken: state.apiToken,
       apiCalls: state.apiCalls,
       persistCredentials: state.persistCredentials,
+      identitySettings: state.identitySettings,
+      billingDetails: state.billingDetails,
+      customerProfile: state.customerProfile,
+      contractInsights: state.contractInsights,
       updateCredentials,
       addApiCall,
+      updateIdentitySettings,
+      updateBillingDetails,
+      updateCustomerProfile,
+      updateContractInsights,
     }),
-    [addApiCall, state, updateCredentials]
+    [
+      addApiCall,
+      state,
+      updateBillingDetails,
+      updateContractInsights,
+      updateCredentials,
+      updateCustomerProfile,
+      updateIdentitySettings,
+    ]
   );
 
   return <ApiContext.Provider value={value}>{children}</ApiContext.Provider>;

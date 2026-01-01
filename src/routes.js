@@ -42,6 +42,7 @@ import Groups from "layouts/groups";
 import Apps from "layouts/apps";
 import Usage from "layouts/usage";
 import BackupOkta from "layouts/backup-okta";
+import Settings from "layouts/settings";
 import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
@@ -97,6 +98,14 @@ const routes = [
     icon: <Icon fontSize="small">cloud_upload</Icon>,
     route: "/backup-okta",
     component: <BackupOkta />,
+  },
+  {
+    type: "collapse",
+    name: "Settings",
+    key: "settings",
+    icon: <Icon fontSize="small">settings</Icon>,
+    route: "/settings",
+    component: <Settings />,
   },
   {
     type: "collapse",
