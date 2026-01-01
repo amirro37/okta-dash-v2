@@ -34,6 +34,30 @@ import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 
+// Mocked security stats; replace with real data fetch when backend is available
+const useSecurityOverview = () => ({
+  mfaEnrollment: {
+    value: 86,
+    change: "+5%",
+    label: "vs. last week",
+  },
+  activeSessions: {
+    value: 1245,
+    change: "+12%",
+    label: "vs. yesterday",
+  },
+  passwordResets: {
+    value: 42,
+    change: "-8%",
+    label: "vs. last month",
+  },
+  expiringTokens: {
+    value: 18,
+    change: "+3",
+    label: "expire in ≤7 days",
+  },
+});
+
 function Dashboard() {
   const { appLogins, policyEvaluations } = reportsLineChartData;
 
