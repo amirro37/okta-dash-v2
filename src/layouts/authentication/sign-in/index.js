@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 // @mui material components
@@ -21,7 +21,6 @@ import Card from "@mui/material/Card";
 import Switch from "@mui/material/Switch";
 import Grid from "@mui/material/Grid";
 import Alert from "@mui/material/Alert";
-import Divider from "@mui/material/Divider";
 import Icon from "@mui/material/Icon";
 
 // Material Dashboard 2 React components
@@ -34,7 +33,6 @@ import MDButton from "components/MDButton";
 import BasicLayout from "layouts/authentication/components/BasicLayout";
 
 // Context
-import { useApi } from "context/ApiContext";
 import { useAuth } from "context/AuthContext";
 
 // Services
@@ -44,7 +42,6 @@ import { initiateGoogleOAuth, initiateSsoEntry } from "services/auth";
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 
 function Basic() {
-  const { baseUrl, apiToken, persistCredentials, updateCredentials } = useApi();
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -61,37 +58,16 @@ function Basic() {
   });
   const [ssoMethod, setSsoMethod] = useState("saml");
   const [rememberMe, setRememberMe] = useState(true);
-  const [rememberOkta, setRememberOkta] = useState(persistCredentials);
-  const [formValues, setFormValues] = useState({
-    baseUrl: baseUrl || "",
-    apiToken: apiToken || "",
-  });
   const [status, setStatus] = useState({
     severity: "info",
     message: "Pick a sign-in path to start a session.",
   });
-  const [oktaStatus, setOktaStatus] = useState({
-    severity: "info",
-    message: "Provide your Okta org URL and an API token.",
-  });
   const [isProcessing, setIsProcessing] = useState(false);
-
-  const initialHelpText = useMemo(() => {
-    const envProvided = baseUrl || apiToken;
-    if (!envProvided) return "Provide your Okta org URL and an API token.";
-    return "Values prefilled from environment variables can be overridden.";
-  }, [apiToken, baseUrl]);
-
-  const handleSetRememberOkta = () => setRememberOkta(!rememberOkta);
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
 
   const handleLoginChange = ({ target }) => {
     setLoginValues((prev) => ({ ...prev, [target.name]: target.value }));
-  };
-
-  const handleChange = ({ target }) => {
-    setFormValues((prev) => ({ ...prev, [target.name]: target.value }));
   };
 
   const handleAccountChange = ({ target }) => {
@@ -100,21 +76,6 @@ function Basic() {
 
   const handleSsoChange = ({ target }) => {
     setSsoValues((prev) => ({ ...prev, [target.name]: target.value }));
-  };
-
-  const handleOktaSubmit = (event) => {
-    event.preventDefault();
-    updateCredentials({
-      baseUrl: formValues.baseUrl,
-      apiToken: formValues.apiToken,
-      persistCredentials: rememberOkta,
-    });
-    setOktaStatus({
-      severity: "success",
-      message:
-        "Connection details saved for your session." +
-        (rememberOkta ? " We will reuse them on your next visit." : ""),
-    });
   };
 
   const handleLoginSubmit = (event) => {
@@ -456,54 +417,6 @@ function Basic() {
             </MDBox>
           </MDBox>
 
-          <Divider sx={{ my: 3 }}>Okta connection</Divider>
-
-          <MDBox component="form" role="form" onSubmit={handleOktaSubmit}>
-            <MDBox mb={2}>
-              <MDInput
-                name="baseUrl"
-                type="url"
-                label="Okta Base URL"
-                value={formValues.baseUrl}
-                onChange={handleChange}
-                fullWidth
-                placeholder="https://your-domain.okta.com"
-              />
-            </MDBox>
-            <MDBox mb={2}>
-              <MDInput
-                name="apiToken"
-                type="password"
-                label="API Token (SSWS)"
-                value={formValues.apiToken}
-                onChange={handleChange}
-                fullWidth
-                placeholder="ssws token"
-              />
-            </MDBox>
-            <MDBox display="flex" alignItems="center" ml={-1}>
-              <Switch checked={rememberOkta} onChange={handleSetRememberOkta} />
-              <MDTypography
-                variant="button"
-                fontWeight="regular"
-                color="text"
-                onClick={handleSetRememberOkta}
-                sx={{ cursor: "pointer", userSelect: "none", ml: -1 }}
-              >
-                &nbsp;&nbsp;Remember on this device
-              </MDTypography>
-            </MDBox>
-            <MDBox mt={4} mb={1}>
-              <MDButton type="submit" variant="gradient" color="info" fullWidth>
-                Save connection settings
-              </MDButton>
-            </MDBox>
-            <MDBox mt={3} mb={1}>
-              <Alert severity={oktaStatus.severity} sx={{ fontSize: "0.9rem" }}>
-                {oktaStatus.message}
-              </Alert>
-            </MDBox>
-          </MDBox>
         </MDBox>
       </Card>
     </BasicLayout>
