@@ -84,6 +84,12 @@ function Basic() {
 
   const handleSetRememberOkta = () => setRememberOkta(!rememberOkta);
 
+  const handleSetRememberMe = () => setRememberMe(!rememberMe);
+
+  const handleLoginChange = ({ target }) => {
+    setLoginValues((prev) => ({ ...prev, [target.name]: target.value }));
+  };
+
   const handleChange = ({ target }) => {
     setFormValues((prev) => ({ ...prev, [target.name]: target.value }));
   };
@@ -161,6 +167,7 @@ function Basic() {
 
   const handleSsoSignIn = async (protocol) => {
     setIsProcessing(true);
+    const identityHint = ssoValues.email || loginValues.email || accountValues.email;
     setStatus({
       severity: "info",
       message: `Starting ${protocol.toUpperCase()} flow...`,
