@@ -118,7 +118,8 @@ function Basic() {
         ? location.state.from
         : "/dashboard";
 
-    const userEmail = loginValues.email || accountValues.email || ssoValues.email || "dashboard-user";
+    const userEmail =
+      loginValues.email || accountValues.email || ssoValues.email || "dashboard-user";
 
     if (loginMethod === "local") {
       login(`session-${Date.now()}`, { email: userEmail, method: "local" });
@@ -293,7 +294,7 @@ function Basic() {
               <MDBox textAlign="center" my={2}>
                 <MDTypography variant="h6" fontWeight="medium" gutterBottom>
                   Sign in with Google
-                </MDButton>
+                </MDTypography>
               </MDBox>
             ) : loginMethod === "sso" ? (
               <MDBox my={2}>
