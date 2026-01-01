@@ -45,14 +45,14 @@ function Dashboard() {
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                color="dark"
-                icon="weekend"
+                color="success"
+                icon="verified_user"
                 title="Active Users"
                 count={281}
                 percentage={{
                   color: "success",
                   amount: "+69%",
-                  label: "testing",
+                  label: "vs. last month",
                 }}
               />
             </MDBox>
@@ -60,13 +60,14 @@ function Dashboard() {
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                icon="leaderboard"
-                title="Today's Users"
-                count="2,300"
+                color="warning"
+                icon="lock"
+                title="Locked Out Users"
+                count={14}
                 percentage={{
-                  color: "success",
-                  amount: "+3%",
-                  label: "than last month",
+                  color: "warning",
+                  amount: "+2%",
+                  label: "vs. last month",
                 }}
               />
             </MDBox>
@@ -74,14 +75,14 @@ function Dashboard() {
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                color="success"
-                icon="store"
-                title="Revenue"
-                count="34k"
+                color="info"
+                icon="pause_circle"
+                title="Suspended Users"
+                count={32}
                 percentage={{
-                  color: "success",
-                  amount: "+1%",
-                  label: "than yesterday",
+                  color: "info",
+                  amount: "-1%",
+                  label: "vs. last month",
                 }}
               />
             </MDBox>
@@ -89,14 +90,14 @@ function Dashboard() {
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                color="primary"
-                icon="person_add"
-                title="Followers"
-                count="+91"
+                color="dark"
+                icon="person_off"
+                title="Deactivated Users"
+                count={9}
                 percentage={{
-                  color: "success",
-                  amount: "",
-                  label: "Just updated",
+                  color: "error",
+                  amount: "0%",
+                  label: "No change",
                 }}
               />
             </MDBox>
