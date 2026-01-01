@@ -42,6 +42,16 @@ function Basic() {
   const { baseUrl, apiToken, persistCredentials, updateCredentials } = useApi();
   const [loginMethod, setLoginMethod] = useState("local");
   const [loginValues, setLoginValues] = useState({ email: "", password: "" });
+  const [accountValues, setAccountValues] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [ssoValues, setSsoValues] = useState({
+    domain: "",
+    email: "",
+  });
+  const [ssoMethod, setSsoMethod] = useState("saml");
   const [rememberMe, setRememberMe] = useState(true);
   const [rememberOkta, setRememberOkta] = useState(persistCredentials);
   const [formValues, setFormValues] = useState({
@@ -62,6 +72,14 @@ function Basic() {
 
   const handleChange = ({ target }) => {
     setFormValues((prev) => ({ ...prev, [target.name]: target.value }));
+  };
+
+  const handleAccountChange = ({ target }) => {
+    setAccountValues((prev) => ({ ...prev, [target.name]: target.value }));
+  };
+
+  const handleSsoChange = ({ target }) => {
+    setSsoValues((prev) => ({ ...prev, [target.name]: target.value }));
   };
 
   const handleOktaSubmit = (event) => {
@@ -86,8 +104,23 @@ function Basic() {
           : "Signed in with local credentials.") +
           (rememberMe ? " We'll remember this device." : "")
       );
+    } else if (loginMethod === "google") {
+      setStatus("Redirecting to Google OAuth to complete your sign-in.");
+    } else if (loginMethod === "sso") {
+      const methodLabel = ssoMethod === "saml" ? "SAML" : "OIDC";
+      setStatus(
+        `Starting ${methodLabel} SSO for ${
+          ssoValues.domain || "your organization"
+        }. Check your IdP to continue.`
+      );
     } else {
-      setStatus("Signed in with Google (mocked OAuth flow for this dashboard).");
+      setStatus(
+        accountValues.password && accountValues.password === accountValues.confirmPassword
+          ? `Account created for ${
+              accountValues.email || "new user"
+            }. Check your email to activate.`
+          : "Password confirmation doesn't match. Please review and try again."
+      );
     }
   };
 
@@ -123,7 +156,7 @@ function Basic() {
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form" onSubmit={handleLoginSubmit}>
-            <MDBox display="flex" justifyContent="center" gap={1} mb={2}>
+            <MDBox display="flex" justifyContent="center" flexWrap="wrap" gap={1} mb={2}>
               <MDButton
                 variant={loginMethod === "local" ? "gradient" : "outlined"}
                 color="info"
@@ -141,6 +174,24 @@ function Basic() {
                 startIcon={<Icon>google</Icon>}
               >
                 Google
+              </MDButton>
+              <MDButton
+                variant={loginMethod === "sso" ? "gradient" : "outlined"}
+                color="info"
+                type="button"
+                onClick={() => setLoginMethod("sso")}
+                startIcon={<Icon>vpn_key</Icon>}
+              >
+                SSO (SAML / OIDC)
+              </MDButton>
+              <MDButton
+                variant={loginMethod === "create" ? "gradient" : "outlined"}
+                color="info"
+                type="button"
+                onClick={() => setLoginMethod("create")}
+                startIcon={<Icon>person_add</Icon>}
+              >
+                Create account
               </MDButton>
             </MDBox>
 
@@ -183,7 +234,7 @@ function Basic() {
                   </MDTypography>
                 </MDBox>
               </>
-            ) : (
+            ) : loginMethod === "google" ? (
               <MDBox textAlign="center" my={2}>
                 <MDTypography variant="h6" fontWeight="medium" gutterBottom>
                   Sign in with Google
@@ -194,6 +245,113 @@ function Basic() {
                 </MDTypography>
                 <MDButton type="submit" variant="gradient" color="info" fullWidth>
                   Continue with Google
+                </MDButton>
+              </MDBox>
+            ) : loginMethod === "sso" ? (
+              <MDBox my={2}>
+                <MDTypography variant="h6" fontWeight="medium" gutterBottom>
+                  Use your company SSO
+                </MDTypography>
+                <MDTypography variant="body2" color="text" mb={2}>
+                  Choose your protocol and confirm your work email to launch the enterprise sign-in
+                  journey.
+                </MDTypography>
+                <Grid container spacing={1} mb={2}>
+                  <Grid item xs={12} sm={6}>
+                    <MDButton
+                      type="button"
+                      variant={ssoMethod === "saml" ? "gradient" : "outlined"}
+                      color="info"
+                      fullWidth
+                      onClick={() => setSsoMethod("saml")}
+                      startIcon={<Icon>shield</Icon>}
+                    >
+                      SAML
+                    </MDButton>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <MDButton
+                      type="button"
+                      variant={ssoMethod === "oidc" ? "gradient" : "outlined"}
+                      color="info"
+                      fullWidth
+                      onClick={() => setSsoMethod("oidc")}
+                      startIcon={<Icon>hub</Icon>}
+                    >
+                      OIDC
+                    </MDButton>
+                  </Grid>
+                </Grid>
+                <MDBox mb={2}>
+                  <MDInput
+                    name="domain"
+                    type="text"
+                    label="Company domain"
+                    value={ssoValues.domain}
+                    onChange={handleSsoChange}
+                    fullWidth
+                    placeholder="company.com"
+                  />
+                </MDBox>
+                <MDBox mb={2}>
+                  <MDInput
+                    name="email"
+                    type="email"
+                    label="Work email"
+                    value={ssoValues.email}
+                    onChange={handleSsoChange}
+                    fullWidth
+                    placeholder="you@company.com"
+                  />
+                </MDBox>
+                <MDButton type="submit" variant="gradient" color="info" fullWidth>
+                  Continue with {ssoMethod === "saml" ? "SAML" : "OIDC"} SSO
+                </MDButton>
+              </MDBox>
+            ) : (
+              <MDBox my={2}>
+                <MDTypography variant="h6" fontWeight="medium" gutterBottom>
+                  Create an admin account
+                </MDTypography>
+                <MDTypography variant="body2" color="text" mb={2}>
+                  Provision credentials for your team and unlock billing, contract review, and SSO
+                  setup from day one.
+                </MDTypography>
+                <MDBox mb={2}>
+                  <MDInput
+                    name="email"
+                    type="email"
+                    label="Work email"
+                    value={accountValues.email}
+                    onChange={handleAccountChange}
+                    fullWidth
+                    placeholder="owner@company.com"
+                  />
+                </MDBox>
+                <MDBox mb={2}>
+                  <MDInput
+                    name="password"
+                    type="password"
+                    label="Password"
+                    value={accountValues.password}
+                    onChange={handleAccountChange}
+                    fullWidth
+                    placeholder="Create a secure passphrase"
+                  />
+                </MDBox>
+                <MDBox mb={2}>
+                  <MDInput
+                    name="confirmPassword"
+                    type="password"
+                    label="Confirm password"
+                    value={accountValues.confirmPassword}
+                    onChange={handleAccountChange}
+                    fullWidth
+                    placeholder="Re-enter password"
+                  />
+                </MDBox>
+                <MDButton type="submit" variant="gradient" color="info" fullWidth>
+                  Create account
                 </MDButton>
               </MDBox>
             )}
