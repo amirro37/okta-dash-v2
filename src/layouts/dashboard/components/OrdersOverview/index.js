@@ -29,50 +29,50 @@ function OrdersOverview() {
     <Card sx={{ height: "100%" }}>
       <MDBox pt={3} px={3}>
         <MDTypography variant="h6" fontWeight="medium">
-          Orders overview
+          Security alerts
         </MDTypography>
         <MDBox mt={0} mb={2}>
           <MDTypography variant="button" color="text" fontWeight="regular">
             <MDTypography display="inline" variant="body2" verticalAlign="middle">
-              <Icon sx={{ color: ({ palette: { success } }) => success.main }}>arrow_upward</Icon>
+              <Icon sx={{ color: ({ palette: { error } }) => error.main }}>priority_high</Icon>
             </MDTypography>
             &nbsp;
             <MDTypography variant="button" color="text" fontWeight="medium">
-              24%
+              Critical
             </MDTypography>{" "}
-            this month
+            review required
           </MDTypography>
         </MDBox>
       </MDBox>
       <MDBox p={2}>
         <TimelineItem
-          color="success"
-          icon="notifications"
-          title="$2400, Design changes"
-          dateTime="22 DEC 7:20 PM"
-        />
-        <TimelineItem
           color="error"
-          icon="inventory_2"
-          title="New order #1832412"
-          dateTime="21 DEC 11 PM"
-        />
-        <TimelineItem
-          color="info"
-          icon="shopping_cart"
-          title="Server payments for April"
-          dateTime="21 DEC 9:34 PM"
+          icon="token"
+          title="API tokens for admin services expire within 48 hours"
+          dateTime="Rotation needed by 22 DEC"
         />
         <TimelineItem
           color="warning"
-          icon="payment"
-          title="New card added for order #4395133"
-          dateTime="20 DEC 2:20 AM"
+          icon="lock_reset"
+          title="Unusual spike in password resets from Finance users"
+          dateTime="21 DEC 11:00 PM"
+        />
+        <TimelineItem
+          color="info"
+          icon="policy"
+          title="Mobile app session policy conflicts with org settings"
+          dateTime="21 DEC 9:34 PM"
         />
         <TimelineItem
           color="primary"
-          icon="vpn_key"
-          title="New card added for order #4395133"
+          icon="shield"
+          title="New login anomalies flagged across multiple regions"
+          dateTime="20 DEC 2:20 AM"
+        />
+        <TimelineItem
+          color="dark"
+          icon="gpp_bad"
+          title="App-level policy overrides detected for Okta Workforce"
           dateTime="18 DEC 4:54 AM"
           lastItem
         />

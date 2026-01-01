@@ -14,6 +14,9 @@ Coded by www.creative-tim.com
 */
 
 export default {
-  labels: ["M", "T", "W", "T", "F", "S", "S"],
-  datasets: { label: "Sales", data: [50, 20, 10, 22, 50, 10, 40] },
+  labels: ["Okta Verify", "WebAuthn", "SMS", "Email", "Voice", "Security Question"],
+  datasets: {
+    label: "Successful MFA challenges",
+    data: [420, 360, 280, 240, 110, 75],
+  },
 };

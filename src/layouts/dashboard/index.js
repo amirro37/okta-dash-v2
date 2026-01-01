@@ -15,9 +15,11 @@ Coded by www.creative-tim.com
 
 // @mui material components
 import Grid from "@mui/material/Grid";
+import Card from "@mui/material/Card";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
+import MDTypography from "components/MDTypography";
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -25,6 +27,7 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
 import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
+import DataTable from "examples/Tables/DataTable";
 
 // Data
 import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
@@ -34,8 +37,65 @@ import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 
+// Mocked security stats; replace with real data fetch when backend is available
+const useSecurityOverview = () => ({
+  mfaEnrollment: {
+    value: 86,
+    change: "+5%",
+    label: "vs. last week",
+  },
+  activeSessions: {
+    value: 1245,
+    change: "+12%",
+    label: "vs. yesterday",
+  },
+  passwordResets: {
+    value: 42,
+    change: "-8%",
+    label: "vs. last month",
+  },
+  expiringTokens: {
+    value: 18,
+    change: "+3",
+    label: "expire in ≤7 days",
+  },
+});
+
 function Dashboard() {
-  const { sales, tasks } = reportsLineChartData;
+  const { appLogins } = reportsLineChartData;
+
+  const activeAppCounts = {
+    columns: [
+      { Header: "app type", accessor: "type", width: "60%", align: "left" },
+      { Header: "active", accessor: "active", align: "center" },
+    ],
+    rows: [
+      { type: "SAML", active: "184" },
+      { type: "OIDC Web", active: "132" },
+      { type: "API Service", active: "96" },
+      { type: "SWA", active: "58" },
+    ],
+  };
+
+  const lastRefreshedAt = new Date().toLocaleString("en-US", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+
+  const stats = {
+    activeUsers: {
+      value: "18,420",
+    },
+    lockedOutUsers: {
+      value: 64,
+    },
+    suspendedUsers: {
+      value: 23,
+    },
+    deactivatedUsers: {
+      value: 312,
+    },
+  };
 
   return (
     <DashboardLayout>
@@ -45,43 +105,14 @@ function Dashboard() {
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                color="dark"
-                icon="weekend"
-                title="Bookings"
-                count={281}
-                percentage={{
-                  color: "success",
-                  amount: "+55%",
-                  label: "than lask week",
-                }}
-              />
-            </MDBox>
-          </Grid>
-          <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
-                icon="leaderboard"
-                title="Today's Users"
-                count="2,300"
-                percentage={{
-                  color: "success",
-                  amount: "+3%",
-                  label: "than last month",
-                }}
-              />
-            </MDBox>
-          </Grid>
-          <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
                 color="success"
-                icon="store"
-                title="Revenue"
-                count="34k"
+                icon="people"
+                title="Active Users"
+                count={stats.activeUsers.value}
                 percentage={{
-                  color: "success",
-                  amount: "+1%",
-                  label: "than yesterday",
+                  color: "text",
+                  amount: "",
+                  label: `Current as of ${lastRefreshedAt}`,
                 }}
               />
             </MDBox>
@@ -89,14 +120,44 @@ function Dashboard() {
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                color="primary"
-                icon="person_add"
-                title="Followers"
-                count="+91"
+                color="info"
+                icon="lock"
+                title="Locked Out"
+                count={stats.lockedOutUsers.value}
                 percentage={{
-                  color: "success",
+                  color: "text",
                   amount: "",
-                  label: "Just updated",
+                  label: `Current as of ${lastRefreshedAt}`,
+                }}
+              />
+            </MDBox>
+          </Grid>
+          <Grid item xs={12} md={6} lg={3}>
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                color="warning"
+                icon="pause_circle"
+                title="Suspended"
+                count={stats.suspendedUsers.value}
+                percentage={{
+                  color: "text",
+                  amount: "",
+                  label: `Current as of ${lastRefreshedAt}`,
+                }}
+              />
+            </MDBox>
+          </Grid>
+          <Grid item xs={12} md={6} lg={3}>
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                color="error"
+                icon="person_off"
+                title="Deactivated"
+                count={stats.deactivatedUsers.value}
+                percentage={{
+                  color: "text",
+                  amount: "",
+                  label: `Current as of ${lastRefreshedAt}`,
                 }}
               />
             </MDBox>
@@ -108,9 +169,9 @@ function Dashboard() {
               <MDBox mb={3}>
                 <ReportsBarChart
                   color="info"
-                  title="website views"
-                  description="Last Campaign Performance"
-                  date="campaign sent 2 days ago"
+                  title="MFA prompts success"
+                  description="Successful MFA challenges by factor"
+                  date="updated 5 min ago"
                   chart={reportsBarChartData}
                 />
               </MDBox>
@@ -119,26 +180,42 @@ function Dashboard() {
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="success"
-                  title="daily sales"
-                  description={
-                    <>
-                      (<strong>+15%</strong>) increase in today sales.
-                    </>
-                  }
-                  date="updated 4 min ago"
-                  chart={sales}
+                  title="App login volume"
+                  description="Monthly sign-ins across key apps"
+                  date="updated 10 min ago"
+                  chart={appLogins}
                 />
               </MDBox>
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
-                <ReportsLineChart
-                  color="dark"
-                  title="completed tasks"
-                  description="Last Campaign Performance"
-                  date="just updated"
-                  chart={tasks}
-                />
+                <Card>
+                  <MDBox
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    p={3}
+                    pb={1}
+                  >
+                    <MDBox>
+                      <MDTypography variant="h6" gutterBottom>
+                        Active app counts
+                      </MDTypography>
+                      <MDTypography variant="button" color="text" fontWeight="regular">
+                        By integration type
+                      </MDTypography>
+                    </MDBox>
+                  </MDBox>
+                  <MDBox px={3} pb={3}>
+                    <DataTable
+                      table={activeAppCounts}
+                      showTotalEntries={false}
+                      isSorted={false}
+                      entriesPerPage={false}
+                      noEndBorder
+                    />
+                  </MDBox>
+                </Card>
               </MDBox>
             </Grid>
           </Grid>
