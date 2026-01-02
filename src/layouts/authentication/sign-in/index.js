@@ -176,8 +176,8 @@ function Basic() {
           <Grid container spacing={2} justifyContent="center" sx={{ mt: 1, mb: 2 }}>
             <Grid item xs={12}>
               <MDTypography variant="button" color="white">
-                Start with an account, Google OAuth, or your SSO providers and keep your Okta
-                connection handy for API-powered widgets.
+                Start with an account, Google OAuth, or your SSO providers. After signing in,
+                configure your Okta connection from Settings to unlock API-powered widgets.
               </MDTypography>
             </Grid>
           </Grid>
@@ -266,12 +266,6 @@ function Basic() {
               <MDBox textAlign="center" my={2}>
                 <MDTypography variant="h6" fontWeight="medium" gutterBottom>
                   Sign in with Google
-                </MDTypography>
-              </MDBox>
-            ) : loginMethod === "microsoft" ? (
-              <MDBox textAlign="center" my={2}>
-                <MDTypography variant="h6" fontWeight="medium" gutterBottom>
-                  Sign in with Microsoft
                 </MDTypography>
               </MDBox>
             ) : loginMethod === "sso" ? (
@@ -416,7 +410,6 @@ function Basic() {
               </Alert>
             </MDBox>
           </MDBox>
-
         </MDBox>
       </Card>
     </BasicLayout>
