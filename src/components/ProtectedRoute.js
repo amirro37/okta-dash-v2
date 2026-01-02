@@ -9,13 +9,7 @@ function ProtectedRoute({ children }) {
   const redirectPath = `${location.pathname}${location.search}${location.hash}`;
 
   if (!isAuthenticated) {
-    return (
-      <Navigate
-        to="/authentication/sign-in"
-        state={{ from: redirectPath }}
-        replace
-      />
-    );
+    return <Navigate to="/authentication/sign-in" state={{ from: redirectPath }} replace />;
   }
 
   return children;

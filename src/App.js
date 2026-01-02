@@ -166,16 +166,16 @@ export default function App() {
             {configsButton}
           </>
         )}
-          {layout === "vr" && <Configurator />}
-          <Routes>
-            {getRoutes(routes)}
-            <Route
-              path="*"
-              element={<Navigate to={isAuthenticated ? "/dashboard" : "/authentication/sign-in"} />}
-            />
-          </Routes>
-        </ThemeProvider>
-      </CacheProvider>
+        {layout === "vr" && <Configurator />}
+        <Routes>
+          {getRoutes(routes)}
+          <Route
+            path="*"
+            element={<Navigate to={isAuthenticated ? "/dashboard" : "/authentication/sign-in"} />}
+          />
+        </Routes>
+      </ThemeProvider>
+    </CacheProvider>
   ) : (
     <ThemeProvider theme={darkMode ? themeDark : theme}>
       <CssBaseline />

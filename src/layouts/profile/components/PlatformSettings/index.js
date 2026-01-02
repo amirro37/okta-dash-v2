@@ -53,12 +53,7 @@ const profileFields = [
 function renderSection(title, entries) {
   return (
     <MDBox mb={3}>
-      <MDTypography
-        variant="caption"
-        fontWeight="bold"
-        color="text"
-        textTransform="uppercase"
-      >
+      <MDTypography variant="caption" fontWeight="bold" color="text" textTransform="uppercase">
         {title}
       </MDTypography>
       <MDBox mt={1.5} display="flex" flexDirection="column" gap={1}>
