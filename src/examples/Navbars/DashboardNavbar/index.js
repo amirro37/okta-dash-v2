@@ -26,6 +26,9 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
 import Icon from "@mui/material/Icon";
 
 // Material Dashboard 2 React components
@@ -35,6 +38,7 @@ import MDInput from "components/MDInput";
 // Material Dashboard 2 React example components
 import Breadcrumbs from "examples/Breadcrumbs";
 import NotificationItem from "examples/Items/NotificationItem";
+import SettingsDrawer from "components/SettingsDrawer";
 
 // Custom styles for DashboardNavbar
 import {
@@ -52,13 +56,17 @@ import {
   setMiniSidenav,
   setOpenConfigurator,
 } from "context";
+import { useAuth } from "context/AuthContext";
 
 function DashboardNavbar({ absolute, light, isMini }) {
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
   const [openMenu, setOpenMenu] = useState(false);
+  const [profileMenu, setProfileMenu] = useState(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const route = useLocation().pathname.split("/").slice(1);
+  const { logout, user } = useAuth();
 
   useEffect(() => {
     // Setting the navbar type
@@ -90,6 +98,8 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
   const handleOpenMenu = (event) => setOpenMenu(event.currentTarget);
   const handleCloseMenu = () => setOpenMenu(false);
+  const handleOpenProfileMenu = (event) => setProfileMenu(event.currentTarget);
+  const handleCloseProfileMenu = () => setProfileMenu(null);
 
   // Render the notifications menu
   const renderMenu = () => (
@@ -107,6 +117,51 @@ function DashboardNavbar({ absolute, light, isMini }) {
       <NotificationItem icon={<Icon>email</Icon>} title="Check new messages" />
       <NotificationItem icon={<Icon>podcasts</Icon>} title="Manage Podcast sessions" />
       <NotificationItem icon={<Icon>shopping_cart</Icon>} title="Payment successfully completed" />
+    </Menu>
+  );
+
+  const renderProfileMenu = () => (
+    <Menu
+      anchorEl={profileMenu}
+      anchorReference={null}
+      anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+      open={Boolean(profileMenu)}
+      onClose={handleCloseProfileMenu}
+      sx={{ mt: 2 }}
+    >
+      <MenuItem component={Link} to="/profile" onClick={handleCloseProfileMenu}>
+        <ListItemIcon>
+          <Icon>person</Icon>
+        </ListItemIcon>
+        <ListItemText
+          primary="Profile"
+          secondary={user?.email ? `Signed in as ${user.email}` : "Manage your account"}
+        />
+      </MenuItem>
+      <MenuItem
+        onClick={() => {
+          setSettingsOpen(true);
+          handleCloseProfileMenu();
+        }}
+      >
+        <ListItemIcon>
+          <Icon>settings</Icon>
+        </ListItemIcon>
+        <ListItemText primary="Connection settings" secondary="Okta base URL & API token" />
+      </MenuItem>
+      <MenuItem
+        component={Link}
+        to="/authentication/sign-in/basic"
+        onClick={() => {
+          if (logout) logout();
+          handleCloseProfileMenu();
+        }}
+      >
+        <ListItemIcon>
+          <Icon>logout</Icon>
+        </ListItemIcon>
+        <ListItemText primary="Sign out" />
+      </MenuItem>
     </Menu>
   );
 
@@ -139,11 +194,14 @@ function DashboardNavbar({ absolute, light, isMini }) {
               <MDInput label="Search here" />
             </MDBox>
             <MDBox color={light ? "white" : "inherit"}>
-              <Link to="/authentication/sign-in/basic">
-                <IconButton sx={navbarIconButton} size="small" disableRipple>
-                  <Icon sx={iconsStyle}>account_circle</Icon>
-                </IconButton>
-              </Link>
+              <IconButton
+                sx={navbarIconButton}
+                size="small"
+                disableRipple
+                onClick={handleOpenProfileMenu}
+              >
+                <Icon sx={iconsStyle}>account_circle</Icon>
+              </IconButton>
               <IconButton
                 size="small"
                 disableRipple
@@ -162,6 +220,16 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 sx={navbarIconButton}
                 onClick={handleConfiguratorOpen}
               >
+                <Icon sx={iconsStyle}>tune</Icon>
+              </IconButton>
+              <IconButton
+                component={Link}
+                to="/settings"
+                size="small"
+                disableRipple
+                color="inherit"
+                sx={navbarIconButton}
+              >
                 <Icon sx={iconsStyle}>settings</Icon>
               </IconButton>
               <IconButton
@@ -177,10 +245,12 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 <Icon sx={iconsStyle}>notifications</Icon>
               </IconButton>
               {renderMenu()}
+              {renderProfileMenu()}
             </MDBox>
           </MDBox>
         )}
       </Toolbar>
+      <SettingsDrawer open={settingsOpen} onClose={() => setSettingsOpen(false)} />
     </AppBar>
   );
 }
